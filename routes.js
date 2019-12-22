@@ -1,6 +1,8 @@
 const express =  require('express');
 const router = express.Router();
 const {getTodo} = require('./services/todo.services');
+const TodoModel = require('./model').TodoModel;
+const rmq = require('./rabbitmq');
 
 router.route('/msg')
 .get((req, res) => {
@@ -17,6 +19,12 @@ router.route('/todo/:id?')
         res.status(404).send('Not find');
     }
     
+})
+.post( async(req, res) =>{
+    const todoModel = new TodoModel();
+    const insertResult = await todoModel.insert({...req.body, date: new Date()});
+    rmq.publish(`Inserted to DB ${insertResult.insertedId}`)
+    res.status(201).json({result: insertResult});
 });
 
 module.exports = router;

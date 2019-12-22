@@ -1,0 +1,4 @@
+```
+publisher -> MongoDB -> RMQ -> consumer 
+
+```

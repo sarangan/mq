@@ -1,15 +1,22 @@
 const express =  require('express');
 const router = express.Router();
-const rq = require('request-promise');
+const {getTodo} = require('./services/todo.services');
 
 router.route('/msg')
 .get((req, res) => {
      res.json({d: `Date ${Date.now()}`});
 });
 
-router.route('/user')
-.get((req,res) =>{
-     res.json('value');
+router.route('/todo/:id?')
+.get( async(req,res) =>{
+    if(req.params.id){
+        const result = await getTodo(req.params.id);
+        res.json({data: result});
+    }
+    else{
+        res.status(404).send('Not find');
+    }
+    
 });
 
 module.exports = router;
